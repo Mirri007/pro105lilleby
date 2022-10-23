@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,10 +9,11 @@
     <!-- Du trenger ikke gjøre noe med CSS-koden! -->
     <link rel="stylesheet" href="css-skal-ikke-roeres/index.css">
 </head>
+
 <body>
 
-    <div id="container">     
-        
+    <div id="container">
+
         <div id="info-div">
             <div id="life-bar-box">
                 <p id="life-bar">300hp</p><!-- Dette er selve livet (grønne baren). -->
@@ -21,281 +23,420 @@
             <p id="material-info">Treverk: 0 enheter. Metall: 0 enheter. Antall bygninger: 0. Styrke: 10</p>
         </div>
 
-
         <!-- Knappemenyen -->
         <div id="button-menu">
-            <button id="buy-building-1-btn"><img src="images/building-1.png"><p>Kjøp (50 treverk, 10 metall)</p></button> 
-            <button id="buy-building-2-btn"><img src="images/building-3.png"><p>Kjøp (150 treverk, 30 metall)</p></button>            
-            <button id="buy-sword-btn"><img id="sword" src="images/sword.png"><p>Kjøp sverd (200 metall)</p></button>
-        </div>        
+            <button id="buy-building-1-btn"><img src="images/building-1.png">
+                <p>Kjøp (50 treverk, 10 metall)</p>
+            </button>
+            <button id="buy-building-2-btn"><img src="images/building-3.png">
+                <p>Kjøp (150 treverk, 30 metall)</p>
+            </button>
+            <button id="buy-sword-btn"><img id="sword" src="images/sword.png">
+                <p>Kjøp sverd (200 metall)</p>
+            </button>
+            <button id="health-potion-btn"><img src="images/health.potion.png">
+                <p>Kjøp health potion (500 metall)</p>
+            </button>
+        </div>
 
         <img id="warrior-1" src="images/warrior.png">
 
         <!-- Her legger man til bilder av bygninger. -->
-        <div id="building-div"></div>    
+        <div id="building-div"></div>
 
+        <div id="monster-div">
+            <img id="monster-3" src="images/cute-wolfman.png" style="display: none" alt="">
+            <img id="monster-2" src="images/cute-wolfman.png" style="display: none" alt="">
+            <img id="monster-1" src="images/cute-wolfman.png" style="display: none" alt="">
+        </div>
 
         <!-- Her legger man til monstre (cute-wolfman.png). -->
-        <div id="monster-div"> <img id="monster-3" src="images/cute-wolfman.png" style="display: none" alt="">
-            <img id="monster-1" src="images/cute-wolfman.png" style="display: none"alt="">
-            <img id="monster-1" src="images/cute-wolfman.png" style="display: none" alt=""></div>
-       
-
+        <div id="monster-div"></div>
 
         <!-- Denne metallgruven skal man kunne klikke på for å få metall -->
         <img id="metal-mine" src="images/metal-mine.png">
 
-
-        <!-- Disse trærne skal man kunne klikke på for å få treverk for å bygge hus. -->                
+        <!-- Disse trærne skal man kunne klikke på for å få treverk for å bygge hus. -->
         <img id="tree-3" src="images/tree.png" alt="">
         <img id="tree-2" src="images/tree.png" alt="">
         <img id="tree-1" src="images/tree.png" alt="">
+         
+        
+       
 
     </div><!-- end container-->
 
-
     <!-- Her skrives det ut informasjon om hva brukeren gjør og hva som skjer. -->
     <div id="output-div">
-        <p>Her skal det skrives ut hva som skjer underveis i spillet. For eksempel "Hugget tre, fikk 20 treverkressurser", "Monster angriper og tar 10hp" osv. Man skal legge til += tekst for å utvide, men siste beskjed skal dukke opp øverst. </p>
+        <p></p>
     </div>
-    
     <script>
 
-        // Variabler
+        // Variables
 
-        //Felles
-        let outputDiv = document.getElementById("output-div");
-        let updateInfo = document.getElementById("material-info");
-        let lifeBar = document.getElementById("life-bar")
-        var xp = 300;
+        //Common variables
 
-        //Gruve
-        let metalMine = document.getElementById("metal-mine");
-        let metallRessurser = document.getElementById("metall-ressurser");
-        let materialInfo = document.getElementById("material-info");
-    
-        let metall = 0;
-        var priceBuilding1Metal = 10;
+        var outputDiv = document.getElementById("output-div");
+        var updateInfo = document.getElementById("material-info");
+        var lifeBar = document.getElementById("life-bar")
+        var hp = 300;
 
-        //Trær
+        //Mine
+
+        var metalMine = document.getElementById("metal-mine");
+        var metalResource = document.getElementById("metall-ressurser");
+        var materialInfo = document.getElementById("material-info");
+
+        var metal = 0;
+
+        //Trees
+
         var treeMine1 = document.getElementById("tree-1");
         var treeMine2 = document.getElementById("tree-2");
         var treeMine3 = document.getElementById("tree-3");
-        var treeResource = document.getElementById("treverk-ressurser"); //
-        var treeInfo = document.getElementById("tre-info");//
-        
+        var treeResource = document.getElementById("treverk-ressurser");
+        var treeInfo = document.getElementById("tre-info");
+
         var tree = 0;
         var treeLife1 = 10;
+        var treeLife2 = 10;
+        var treeLife3 = 10;
+
+        // Monsters
+
+        var monster1 = document.getElementById("monster-1");
+        var monster2 = document.getElementById("monster-2");
+        var monster3 = document.getElementById("monster-3");
+
+        var monstersIn = 0;
         var monster = 0;
-        var priceBuilding1Tree = 50;
+
+        var monster1Hp = 40;
+        var monster2Hp = 40;
+        var monster3Hp = 40;
+
+        // Sword
+
+        var buySwordBtn = document.getElementById("buy-sword-btn");
+        var priceSword = 200;
+        var hasSword = 0;
+        var strength = 10;
 
         //Buildings
+
         var addBuilding1Btn = document.getElementById("buy-building-1-btn");
         var addBuilding2Btn = document.getElementById("buy-building-2-btn");
+        var buildingDiv = document.getElementById("building-div");
 
-        var currency = [tree, metall];
-        var building1Price = [100,10]
-        var building1 = document.getElementById("building-div");
+        var building1Price = [50, 10];
+        var building2Price = [150, 30];
 
-        // Funksjoner 
-        //Gruve
-        function farmMetall() {
-            metall += 10;
-           
-            /*console.log(metall);*/
-            // materialInfo.innerhtml = metall;
-            outputDiv.innerHTML = `${metall}`;
+        //healthpotion
+        var healthPotionBtn = document.getElementById("health-potion-btn");
+        var potionPrice = 500;
+        
+        // List
+        var logs = [];
+
+        // Functions
+
+        // Oppdaterer listen nederst på siden, og sletter det siste elementet hvis arrayet har over 5 elementer slik at den ikke blir for lang
+
+        function liste() {
+            outputDiv.innerHTML = `${logs}`;
+            if (logs.length > 4) {
+                logs.pop();
+            }
+        }
+
+        //Mine
+
+        //Kaller på spawnMonster funksjonen hver gang du trykker på gruven. Da går monstersIn variabelen opp slik at ulvene spawner.
+
+        function farmMetal() {
+            metal += 10;
             update()
+            logs.unshift(`<strong>Du fikk metall! Totalt: ${metal}<br></strong>`);
+            liste();
+            console.log(logs);
+            monsterAttack();
+            spawnMonster();
         }
 
-        //Trær
-        function farmTree(){
-            
-            /*console.log(tree);
-            console.log(treeLife1); */   
-            treeLife1 = treeLife1 - 1
-            
-            if(treeLife1 == 0){
-                document.getElementById("tree-1").style.display='none';
-            } 
-            
-            if(monster == 1){
-                xp -= 10;
-                lifeBar.innerHTML = `${xp}`;
+        //Trees
+
+        function farmTree1() {
+
+            treeLife1 = treeLife1 - 1;
+
+            if (treeLife1 === 0) {
+                document.getElementById("tree-1").style.display = 'none';
+
             }
 
-            else{
+            else {
                 tree += 25;
-                let number1 = Math.floor(Math.random() *100);
-                console.log(number1);  
-                if(number1 <= 25){
-                    monster = 1
-                    document.getElementById("monster-1").style.display='';
-                }
-            }
+            } update()
+            monsterAttack();
+            logs.unshift(`<strong>Du fikk 25 treressurser! Totalt: ${tree}<br></strong>`);
+            liste();
         }
 
-        function farmTree2(){
+        function farmTree2() {
 
-            // console.log(treeLife2);
-            treeLife2 = treeLife2 - 1
-            
-            if(treeLife1 == 0){
-                document.getElementById("tree-2").style.display='none';
-            } 
-            
-            if(monster == 1){
-                xp -= 10;
-                lifeBar.innerHTML = `${xp}`;
+            treeLife2 = treeLife2 - 1;
+
+            if (treeLife2 === 0) {
+                document.getElementById("tree-2").style.display = 'none';
             }
-            
-            else{
+
+            else {
                 tree += 25;
-                let number1 = Math.floor(Math.random() *100);
-                console.log(number1);  
-                if(number1 <= 25){
-                    monster = 1
-                    document.getElementById("monster-1").style.display='';
-                }
-            }
-            update() // kjører update funksjonen 
-            outputDiv.innerHTML = `${tree}`; //oppdaterer trebeholdning nederst på skjermen 
+            } update()
+            monsterAttack();
+            logs.unshift(`<strong>Du fikk 25 treressurser! Totalt: ${tree}<br></strong>`);
+            liste();
         }
-       
-           function farmTree2(){
 
-            // console.log(treeLife2);
-            treeLife2 = treeLife2 - 1
-            
-            if(treeLife1 == 0){
-                document.getElementById("tree-2").style.display='none';
-            } 
-            
-            if(monster == 1){
-                xp -= 10;
-                lifeBar.innerHTML = `${xp}`;
+        function farmTree3() {
+
+            treeLife3 = treeLife3 - 1;
+
+            if (treeLife3 === 0) {
+                document.getElementById("tree-3").style.display = 'none';
             }
-            
-            else{
+
+            else {
                 tree += 25;
-                let number1 = Math.floor(Math.random() *100);
-                console.log(number1);  
-                if(number1 <= 25){
-                    monster = 1
-                    document.getElementById("monster-1").style.display='';
-                }
-            }
+            } update()
+            monsterAttack();
+            logs.unshift(`<strong>Du fikk 25 treressurser! Totalt: ${tree}<br></strong>`);
+            liste();
         }
-
-           function farmTree2(){
-
-            // console.log(treeLife2);
-            treeLife2 = treeLife2 - 1
-            
-            if(treeLife2 == 0){
-                document.getElementById("tree-2").style.display='none';
-            } 
-            
-            if(monster == 1){
-                xp -= 10;
-                lifeBar.innerHTML = `${xp}`;
-            }
-            
-            else{
-                tree += 25;
-                let number1 = Math.floor(Math.random() *100);
-                console.log(number1);  
-                if(number1 <= 25){
-                    monster = 1
-                    document.getElementById("monster-1").style.display='';
-                }
-            }
-        }
-
-            function farmTree3(){
-
-            // console.log(treeLife2);
-            treeLife3 = treeLife2 - 1
-
-            if(treeLife3 == 0){
-                document.getElementById("tree-2").style.display='none';
-            } 
-
-            if(monster == 1){
-                xp -= 10;
-                lifeBar.innerHTML = `${xp}`;
-            }
-
-            else{
-                tree += 25;
-                let number1 = Math.floor(Math.random() *100);
-                console.log(number1);  
-                if(number1 <= 25){
-                    monster = 1
-                    document.getElementById("monster-1").style.display='';
-                }
-            }
-            update() // kjører update funksjonen 
-            outputDiv.innerHTML = `${tree}`; //oppdaterer trebeholdning nederst på skjermen 
-        }
-
 
         //Buildings
-        function addBuidling1(){
-            if (tree >= priceBuilding1Metal && metall >= priceBuilding1Metal)  {
 
-            metall = metall - priceBuilding1Metal; 
-            tree = tree - priceBuilding1Tree;
-            building1.innerHTML += `<img src="images/building-1.png">`;  
-            update();
+        function addBuilding1() {
+            if (tree >= building1Price[0] && metal >= building1Price[1]) {
+
+                tree = tree - building1Price[0];
+                metal = metal - building1Price[1];
+                buildingDiv.innerHTML += `<img src = "images/building-1.png"> `;
+                update();
+                logs.unshift(`<strong>Du kjøpte en bygning!<br></strong>`);
+                liste();
             }
-            
-            else{
+
+            else {
                 alert("Beklager, din konto er tom! Skaff mer treverk eller metall for å fortsette.");
             }
-       }
-
-       function addBuidling2(){
-            if (currency[0] >= building1Price[0] && currency[1] >= building1Price[1])  {
-
-            currency = currency - building2Price; 
-            building1.innerHTML += `<img src="images/building-3.png">`;  
-            }
-            
-            else{
-                alert("Beklager, din konto er tom! Skaff mer treverk eller metall for å fortsette.");
-            }
-       }
-
-        //updates
-        function update(){
-
-            updateInfo.innerHTML = `Treverk: ${tree} enheter. Metall: ${metall} enheter. Antall bygninger: 0. Styrke: 10`; // oppdaterer teksten øverst på skjrmen
         }
-        
-        // Events 
+
+        function addBuilding2() {
+            if (tree >= building2Price[0] && metal >= building2Price[1]) {
+
+                tree = tree - building2Price[0];
+                metal = metal - building2Price[1];
+                buildingDiv.innerHTML += `<img src = "images/building-3.png"> `;
+                update();
+                logs.unshift(`<strong>Du kjøpte en bygning!<br></strong>`);
+                liste();
+            }
+
+            else {
+                alert("Beklager, din konto er tom! Skaff mer treverk eller metall for å fortsette.");
+            }
+        }
+
+        //Sword
+
+        //funksjon som lar spilleren kjøpe sverd ved å trekke fra 200 metal, hvis spilleren har det, og øke styrke fra 10 til 40
+
+        function buySword() {
+            if (metal >= 200) {
+                metal = metal - priceSword;
+                hasSword = 1;
+                strength = 40;
+                logs.unshift(`<strong>Du kjøpte et sverd! Styrke: ${strength}<br></strong>`);
+                liste();
+            } else {
+                alert("Skaff mer metall for å kjøpe sverd.");
+            }
+            update();
+        }
+
+        //Monster functions
+
+        // attackMonster(x) funksjonen sjekker om spilleren har kjøpt sverd eller ikke og gjør skade på monstrene tilsvarende styrken til spilleren. Når monsteret har 0 eller mindre hp forsvinner det.
+
+        function attackMonster1() {
+            monsterAttack();
+            if (hasSword === 1) {
+                monster1Hp -= 40;
+            } else {
+                monster1Hp -= 10;
+            }
+            if (monster1Hp <= 0) {
+                monster1.style.display = 'none';
+                monster--;
+            } logs.unshift(`<strong>Du skadet ulven! Den har ${monster1Hp} liv igjen<br></strong>`);
+            liste();
+        }
+
+        function attackMonster2() {
+            monsterAttack();
+            if (hasSword === 1) {
+                monster2Hp -= 40;
+            } else {
+                monster2Hp -= 10;
+            }
+            if (monster2Hp <= 0) {
+                monster2.style.display = 'none';
+                monster--;
+            } logs.unshift(`<strong>Du skadet ulven! Den har ${monster2Hp} liv igjen<br></strong>`);
+            liste();
+        }
+
+        function attackMonster3() {
+            monsterAttack();
+            if (hasSword === 1) {
+                monster3Hp -= 40;
+            } else {
+                monster3Hp -= 10;
+            }
+            if (monster3Hp <= 0) {
+                monster3.style.display = 'none';
+                monster--;
+            } logs.unshift(`<strong>Du skadet ulven! Den har ${monster3Hp} liv igjen<br></strong>`);
+            liste();
+        }
+
+        //MonsterAttack funksjonen gjør at spilleren mister 10 liv hvert trekk for hvert monster som eksisterer
+
+        function monsterAttack() {
+            if (monster != 0) {
+                hp -= 10 * monster;
+                lifeBar.innerHTML = `${hp}`;
+            }
+        }
+
+        //Spawn functions
+
+        //Hvis det ikke er noen monstre på banen vil denne funksjonen gjøre at monstersIn variabelen øker hver gang denne funksjonen blir kalt på. Når monstersIn treffer 8
+
+        function spawnMonster() {
+
+            if (monster === 0) {
+
+                monstersIn += 1;
+
+                if (monstersIn === 8) {
+                    monstersIn = 0;
+                    monster1Hp = 40;
+                    monster2Hp = 40;
+                    monster3Hp = 40;
+                    monster = Math.floor(Math.random() * 3) + 1;
+
+                    if (monster != 0) {
+
+                        hp -= 10 * monster;
+                        lifeBar.innerHTML = `${hp}`;
+
+                        if (monster === 1) {
+                            monster1.style.display = '';
+                            logs.unshift(`<strong>${monster} ulv har funnet deg!<br></strong>`);
+                            liste();
+                        } else if (monster === 2) {
+
+                            monster1.style.display = '';
+                            monster2.style.display = '';
+                            logs.unshift(`<strong>${monster} ulver har funnet deg!<br></strong>`);
+                            liste();
+                        } else if (monster === 3) {
+
+                            monster1.style.display = '';
+                            monster2.style.display = '';
+                            monster3.style.display = '';
+                            logs.unshift(`<strong>${monster} ulver har funnet deg!<br></strong>`);
+                            liste();
+                        }
+                    }
+                }
+            }
+        }
+
+           //healthpotion
+           function healthPotion(){
+            if (metal >= 500) {
+                metal = metal - potionPrice;
+                hp += 100;
+                lifeBar.innerHTML = `${hp}`;
+                console.log(logs);
+                logs.unshift(`<strong>Du kjøpte en potion! Hp: ${hp}<br></strong>`);
+                liste();
+                update();
+            } else {
+                alert("Skaff mer metall for å kjøpe potion.");
+            }
+            update();
+        }
+
+
+
+        /* Function for the game over message when the warrior dont have any health left or have manage to use all the wood, when the player have used all the wood 
+the player have completed to build the village. if the player loses there will pop up an alert stating that the hero have died, then a game over screnn.
+If the player manage to win there will come an alert that have completed the village and there will pop up a you won over the screen */
+
+function gameEnded(){
+    if (heroHealth === 0) {
+         alert("Karakteren din har død!");
+         document.body.innerHTML = `<img src="images/game-over.png">`;    
+         document.body.style.backgroundColor = "Red";
+         document.body.style.position = "absolute";
+         document.body.style.left = "50%";
+         document.body.style.transform = "translate(-50%)";
+     }if(usedwood === 750){
+         alert("Du har klart å fullføre landsbyen");
+         document.body.innerHTML = `<img src="images/you-won.png">`;    
+         document.body.style.backgroundColor = "wheat";
+         document.body.style.position = "absolute";
+         document.body.style.left = "50%";
+         document.body.style.top = "35%";
+         document.body.style.transform = "translate(-50%)";
+     }
+ }
+ 
+
+        //Updates
+
+        function update() {
+
+            updateInfo.innerHTML = `Treverk: ${tree} enheter.Metall: ${metal} enheter.Antall bygninger: 0. Styrke: ${strength} `; // oppdaterer teksten øverst på skjrmen
+        }
+
+        //Events 
 
         //Gruve
-        farmMetall();
-        metalMine.onclick = farmMetall;
 
-        //Trær
-        farmTree;
-        treeMine1.onclick = farmTree;
+        metalMine.onclick = farmMetal;
+        monster1.onclick = attackMonster1;
+        monster2.onclick = attackMonster2;
+        monster3.onclick = attackMonster3;
+        buySwordBtn.onclick = buySword;
 
-        farmTree2;
-        treeMine2.onclick = farmTree;
+        //Trees
 
-        farmTree3;
-        treeMine3.onclick = farmTree;
+        treeMine1.onclick = farmTree1;
+        treeMine2.onclick = farmTree2;
+        treeMine3.onclick = farmTree3;
 
-        //add buildings
-        addBuidling1;
-        addBuilding1Btn.onclick = addBuidling1;
+        //Add buildings
 
-        addBuidling2;
-        addBuilding2Btn.onclick = addBuidling2;
+        addBuilding1Btn.onclick = addBuilding1;
+        addBuilding2Btn.onclick = addBuilding2;
+
+        //healthpotion
+        healthPotionBtn.onclick = healthPotion;
 
     </script>
 </body>
-</html>
